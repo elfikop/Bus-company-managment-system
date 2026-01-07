@@ -57,7 +57,7 @@ $lol = $enquries->displayEnquries();
 
         .route-main { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
         .route-sub  { font-size: 12px; color: #636e72; }
-        /* Styl dla informacji o autobusie */
+       
         .bus-info { font-size: 11px; color: #27ae60; font-weight: bold; margin-top: 5px; }
 
         .client-name { font-weight: 600; font-size: 14px; display: block; margin-bottom: 2px; }
@@ -104,15 +104,7 @@ $lol = $enquries->displayEnquries();
             <li><a href="../index.php">Menu</a></li>
             <li><a href="../includes/logout.inc.php" class="header-login-a">WYLOGUJ</a></li>
         <?php } ?>
-        
-        <?php 
-        if((isset($_SESSION["userid"])) && ($_SESSION["userrole"]=="uzytkownik")) { ?>
-            <li><a href="#">Witaj, <strong><?php echo $_SESSION["username"]; ?></strong></a></li>
-            <li><a href="reservations.php">Moje Rezerwacje</a></li>
-            <li><a href="quotes.php">Wyceny</a></li>
-            <li><a href="../index.php">Menu</a></li>
-            <li><a href="../includes/logout.inc.php" class="header-login-a">WYLOGUJ</a></li>
-        <?php } ?>
+    
 
         <?php if(!isset($_SESSION["userid"])){
             header("location: ../../client-view/enquiry.php?error=brak_autoryzacji");
@@ -166,6 +158,7 @@ $lol = $enquries->displayEnquries();
             <div class="col-pricing">
                 <form action="../includes/admin/update-reservation.inc.php" method="POST" style="display:contents;">
                     <input type="hidden" name="id_rezerwacji" value="<?php echo $res['id_rezerwacji']; ?>">
+                    <input type="hidden" name="id_klienta" value="<?php echo $res['id_konta']; ?>">
                     
                     <div class="input-inline">
                         <label>Cena (PLN)</label>

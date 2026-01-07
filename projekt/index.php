@@ -33,6 +33,7 @@
                     <a href="admin-view/manage-buses.php" class="menu-item"><span class="menu-text">Zarządzanioe Pojazdami</span></a>
                     <a href="admin-view/display_enquries.php" class="menu-item"><span class="menu-text">Rezerwacje</span></a>
                     <a href="client-view/enquiry.php" class="menu-item"><span class="menu-text">Rezerwacja Przejazdu</span></a>
+                    <a href="worker-view/my-schelude.php" class="menu-item"><span class="menu-text">Mój Grafik (Kierowca)</span></a>
                 </div>
                 <a href="includes/logout.inc.php" class="logout-link-btn">Wyloguj się bezpiecznie</a>
             </div>
@@ -44,7 +45,7 @@
                     <p>Wybierz jedną z opcji poniżej:</p>
                 </div>
                 <div class="user-menu-grid">
-                    <a href="grafik.php" class="menu-item"><span class="menu-text">Wyświetl Grafik</span></a>
+                    <a href="worker-view/my-schelude.php" class="menu-item"><span class="menu-text">Wyświetl Grafik</span></a>
                 </div>
                 <a href="includes/logout.inc.php" class="logout-link-btn">Wyloguj się bezpiecznie</a>
             </div>
@@ -57,7 +58,7 @@
                 </div>
                 <div class="user-menu-grid">
                     <a href="client-view/enquiry.php" class="menu-item"><span class="menu-text">Utwórz Zapytanie</span></a>
-                    <a href="rezerwacja.php" class="menu-item"><span class="menu-text">Moje Rezerwacje</span></a>
+                    <a href="client-view/my-reservations.php" class="menu-item"><span class="menu-text">Moje Rezerwacje</span></a>
                 </div>
                 <a href="includes/logout.inc.php" class="logout-link-btn">Wyloguj się bezpiecznie</a>
             </div>

@@ -1,4 +1,4 @@
-<?php
+ <?php
 class LoginContr extends Model {
     private $uid;
     private $pwd;

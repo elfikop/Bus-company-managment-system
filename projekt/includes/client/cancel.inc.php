@@ -1,16 +1,15 @@
-<?php session_start(); ?>
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Rezerwacji Przejazdów</title>
-    <link href="style.css" rel="stylesheet" />
-</head>
-<body>
-<header>
-    
-</header>
-    <!-- Tabela wyświetlająca rezerwacje klienta pobrane z tabeli rezerwacje. -->
-</body>
-</html>
+<?php
+session_start();
+if(isset($_POST["submit"]) && isset($_SESSION["userid"])) {
+    $id_rezerwacji = $_POST["id_rezerwacji"];
+    $id_konta = $_SESSION["userid"];
+
+    include "../../classes/dbh.classes.php";
+    include "../../classes/model-classes.php";
+    include "../../classes/travel-contr.classes.php";
+
+    $travel = new TravelContr();
+    $travel->cancelReservation($id_rezerwacji, $id_konta);
+
+    header("location: ../../client-view/my-reservations.php?error=deleted");
+}

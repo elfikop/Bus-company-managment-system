@@ -45,4 +45,12 @@ class WorkerContr extends Model {
         }
         $this->addW($this->login, $this->pwd, $this->imie, $this->nazwisko, $this->pesel, $this->telefon,$this->email,$this->adres,$this->stanowisko);
     }
+    public function displaySchedule($id_konta) {
+  
+    if(!isset($_SESSION["userid"])) {
+        header("location: ../index.php?error=not_logged_in");
+        exit();
+    }
+    return $this->getWorkerSchedule($id_konta);
+}
 }

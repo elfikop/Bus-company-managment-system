@@ -45,11 +45,19 @@ class TravelContr extends Model {
         }
         $tab =$this->widthdrwawE($id_rezerwacji);
     }
-    public function updateEnquiry($id_rezerwacji,$cena,$id_pracownika){
+    public function updateEnquiry($id_rezerwacji,$cena,$id_pracownika,$id_konta){
         if(!isset($_SESSION["userid"])&&($_SESSION["userrole"]=="kierownik")) {
             header("location: ../index.php?error=not_kierownik");
             exit();
         }
-        $tab =$this->updateE($id_rezerwacji,$cena,$id_pracownika);
+        $tab =$this->updateE($id_rezerwacji,$cena,$id_pracownika,$id_konta);
     }
+    public function acceptPrice($id_rezerwacji, $id_konta) {
+    
+    $this->updateStatusClient($id_rezerwacji, $id_konta, 'Zatwierdzona');
+}
+
+public function cancelReservation($id_rezerwacji, $id_konta) {
+    $this->deleteReservationClient($id_rezerwacji, $id_konta);
+}
 }

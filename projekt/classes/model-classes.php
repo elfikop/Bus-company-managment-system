@@ -30,7 +30,8 @@ class Model extends Dbh {
     protected function getUser($uid, $pwd) {
         $stmt = $this->connect()->prepare('SELECT 
                                             konta.*, 
-                                            COALESCE(uzytkownicy.imie, pracownicy.imie) AS imie_wyswietlane
+                                            COALESCE(uzytkownicy.imie, pracownicy.imie) AS imie_wyswietlane,
+                                            COALESCE(uzytkownicy.id_uzytkownika, pracownicy.id_pracownika) AS id_up
                                             FROM konta 
                                             LEFT JOIN uzytkownicy ON konta.id_konta = uzytkownicy.id_konta 
                                             LEFT JOIN pracownicy ON konta.id_konta = pracownicy.id_konta 
@@ -54,6 +55,7 @@ class Model extends Dbh {
             $_SESSION["userid"] = $user[0]["id_konta"];
             $_SESSION["username"] = $user[0]["imie_wyswietlane"];
             $_SESSION["userrole"] = $user[0]["rola"];
+            $_SESSION["id_up"] = $user[0]["id_up"];
         }
     }
 
@@ -95,7 +97,6 @@ protected function checkTravel($data_przejazdu, $liczba_osob) {
     $stmt = $this->connect()->prepare('INSERT INTO rezerwacje 
         (id_konta, imie_nazwisko, telefon, instytucja, miasto_z, miasto_do, data_przejazdu, godzina_powrotu, liczba_osob, id_autobusu, id_pracownika, status, cena, data_utworzenia) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);');
-
 
     if (!$stmt->execute([
         $id_uzytkownika, 
@@ -150,16 +151,17 @@ protected function checkTravel($data_przejazdu, $liczba_osob) {
         exit();
     }
 }
-protected function updateE($id_rezerwacji, $cena, $id_pracownika) {
-    $stmt = $this->connect()->prepare('UPDATE rezerwacje SET status = "Wyceniono", cena = ?, id_pracownika = ? WHERE id_rezerwacji = ?;');
-    
-    if(!$stmt->execute([$cena, $id_pracownika, $id_rezerwacji])) {
-        header("location: ../index.php?error=stmtfailed");
-        exit();
+protected function updateE($id_rezerwacji, $cena, $id_pracownika, $id_klienta) {
+    if (in_array($id_klienta, [4, 5, 7])) {
+        $statuszmienny = "Zatwierdzona";
+    } else {
+        $statuszmienny = "Wyceniono";
     }
+
+    $stmt = $this->connect()->prepare('UPDATE rezerwacje SET status = ?, cena = ?, id_pracownika = ? WHERE id_rezerwacji = ?;');
     
-    if($stmt->rowCount() == 0) {
-        header("location: ../index.php?error=update_failed");
+    if(!$stmt->execute([$statuszmienny, $cena, $id_pracownika, $id_rezerwacji])) {
+        header("location: ../index.php?error=stmtfailed");
         exit();
     }
 }
@@ -305,6 +307,65 @@ protected function deleteB($id_autobusu) {
             exit();
         }
     }
+}
+///////////////////////zarzadzanie rezerwacjami uzytkownik 
+protected function getUserReservations($id_konta) {
+    $stmt = $this->connect()->prepare('
+        SELECT r.*, a.rejestracja, a.model 
+        FROM rezerwacje r 
+        LEFT JOIN autobusy a ON r.id_autobusu = a.id_autobusu 
+        WHERE r.id_konta = ? 
+        ORDER BY r.data_przejazdu DESC;
+    ');
+
+    if(!$stmt->execute([$id_konta])) {
+        header("location: ../index.php?error=stmtfailed");
+        exit();
+    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+protected function updateStatusClient($id_rezerwacji, $id_konta, $status) {
+    $stmt = $this->connect()->prepare('UPDATE rezerwacje SET status = ? WHERE id_rezerwacji = ? AND id_konta = ?;');
+    if(!$stmt->execute([$status, $id_rezerwacji, $id_konta])) {
+        header("location: ../../client-view/my-reservations.php?error=stmtfailed");
+        exit();
+    }
+}
+
+protected function deleteReservationClient($id_rezerwacji, $id_konta) {
+    $stmt = $this->connect()->prepare('DELETE FROM rezerwacje WHERE id_rezerwacji = ? AND id_konta = ?;');
+    if(!$stmt->execute([$id_rezerwacji, $id_konta])) {
+        header("location: ../../client-view/my-reservations.php?error=stmtfailed");
+        exit();
+    }
+}
+///////////////////////////////pracownik grafik 
+// --- SEKCJA GRAFIKU KIEROWCY ---
+protected function getWorkerSchedule($id_pracownika) {
+    // Pobieramy ID pracownika na podstawie jego ID konta (z sesji)
+    $db = $this->connect();
+    $stmtId = $db->prepare('SELECT id_pracownika FROM pracownicy WHERE id_konta = ?;');
+    $stmtId->execute([$id_pracownika]);
+    $worker = $stmtId->fetch(PDO::FETCH_ASSOC);
+
+    if (!$worker) return [];
+
+    $stmt = $db->prepare('
+        SELECT r.*, a.rejestracja, a.model, a.marka 
+        FROM rezerwacje r 
+        LEFT JOIN autobusy a ON r.id_autobusu = a.id_autobusu 
+        WHERE r.id_pracownika = ? AND r.status = "Zatwierdzona"
+        ORDER BY r.data_przejazdu ASC;
+    ');
+
+    if(!$stmt->execute([$worker['id_pracownika']])) {
+        $stmt = null;
+        header("location: ../index.php?error=stmtfailed");
+        exit();
+    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 }
 

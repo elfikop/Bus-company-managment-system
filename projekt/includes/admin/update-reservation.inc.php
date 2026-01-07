@@ -1,14 +1,16 @@
 <?php
+session_start();
 if(isset($_POST["submit0"])) {
     $id_rezerwacji= $_POST["id_rezerwacji"];
     $cena= $_POST["cena"];
      $id_pracownika= $_POST["id_pracownika"];
+     $id_klienta = $_POST["id_klienta"];
     include "../../classes/dbh.classes.php";
     include "../../classes/model-classes.php";
     include "../../classes/travel-contr.classes.php";
 
     $workerdel = new TravelContr();
-    $workerdel->updateEnquiry($id_rezerwacji,$cena,$id_pracownika);
+    $workerdel->updateEnquiry($id_rezerwacji,$cena,$id_pracownika,$id_klienta);
 
     header("location: ../../admin-view/display_enquries.php?error=none");
 }
