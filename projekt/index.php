@@ -8,21 +8,20 @@
     <link href="style.css" rel="stylesheet" />
 </head>
 <body>
-<header>
-    <ul class="menu-member">
-        <?php if(isset($_SESSION["userid"])) { ?>
+    <header>
+        <ul class="menu-member">
+            <?php if(isset($_SESSION["userid"])) { ?>
             <li><a href="#">Witaj, <strong><?php echo $_SESSION["username"]; ?></strong></a></li>
             <li><a href="includes/logout.inc.php" class="header-login-a">WYLOGUJ</a></li>
-        <?php } else { ?>
+            <?php } else { ?>
             <li><a href="#">REJESTRACJA</a></li>
             <li><a href="#" class="header-login-a">LOGOWANIE</a></li>
-        <?php } ?>
-    </ul>
-</header>
-
-<section class="index-login">
-    <div class="wrapper">
-        <?php if((isset($_SESSION["userid"]))&&($_SESSION["userrole"]=="kierownik")) { ?>
+            <?php } ?>
+        </ul>
+    </header>]
+    <section class="index-login">
+        <div class="wrapper">
+            <?php if((isset($_SESSION["userid"]))&&($_SESSION["userrole"]=="kierownik")) { ?>
             <div class="user-panel-card">
                 <div class="user-panel-header">
                     <h4>Panel Zarządzania</h4>
@@ -37,8 +36,8 @@
                 </div>
                 <a href="includes/logout.inc.php" class="logout-link-btn">Wyloguj się bezpiecznie</a>
             </div>
-        <?php }
-        elseif((isset($_SESSION["userid"]))&&($_SESSION["userrole"]=="pracownik")) { ?>
+            <?php }
+            elseif((isset($_SESSION["userid"]))&&($_SESSION["userrole"]=="pracownik")) { ?>
             <div class="user-panel-card">
                 <div class="user-panel-header">
                     <h4>Grafik Pracownika</h4>
@@ -49,8 +48,8 @@
                 </div>
                 <a href="includes/logout.inc.php" class="logout-link-btn">Wyloguj się bezpiecznie</a>
             </div>
-        <?php }
-        elseif((isset($_SESSION["userid"]))&&($_SESSION["userrole"]=="uzytkownik")) { ?>
+            <?php }
+            elseif((isset($_SESSION["userid"]))&&($_SESSION["userrole"]=="uzytkownik")) { ?>
             <div class="user-panel-card">
                 <div class="user-panel-header">
                     <h4>Panel Uzytkownika</h4>
@@ -62,8 +61,8 @@
                 </div>
                 <a href="includes/logout.inc.php" class="logout-link-btn">Wyloguj się bezpiecznie</a>
             </div>
-        <?php }
-        elseif(!isset($_SESSION["userid"])) { ?>
+            <?php }
+            elseif(!isset($_SESSION["userid"])) { ?>
             <div class="index-login-signup">
                 <h4>Rejestracja</h4>
                 <form action="includes/signup.inc.php" method="post">
@@ -88,8 +87,8 @@
                     <button type="submit" name="submit">Zaloguj się</button>
                 </form>
             </div>
-        <?php } ?>
-    </div>
-</section>
+            <?php } ?>
+        </div>
+    </section>
 </body>
 </html>

@@ -24,5 +24,6 @@ class SignupContr extends Model {
 
     private function pwdMatch() {
         return $this->pwd === $this->pwdRepeat;
+        //return true;
     }
 }

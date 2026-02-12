@@ -19,19 +19,12 @@ $buses = $busContr->displayBuses();
     <meta charset="UTF-8">
     <title>Zarządzanie Pojazdami</title>
     <link href="../style.css" rel="stylesheet" />
-    <style>
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-        th { background: #dfe6e9; text-transform: uppercase; font-size: 11px; }
-        .btn { padding: 6px 12px; border: none; cursor: pointer; font-size: 11px; text-transform: uppercase; border-radius: 4px; }
-        .btn-add { background: #27ae60; color: white; }
-        .btn-del { background: #d63031; color: white; }
-    </style>
+    <link href="manage-buses.css" rel="stylesheet"/>
 </head>
 <body>
 <header>
     <ul class="menu-member">
-        <li>Witaj, <strong><?= $_SESSION["username"]; ?></strong></li>
+        <li><a href="#">Witaj, <strong><?php echo $_SESSION["username"]; ?></strong></a></li>
         <li><a href="../index.php">Menu</a></li>
         <li><a href="../includes/logout.inc.php" class="header-login-a">WYLOGUJ</a></li>
     </ul>

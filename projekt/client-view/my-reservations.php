@@ -18,99 +18,90 @@ $myReservations = $travelContr->displayUserReservations($_SESSION["userid"]);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moje Rezerwacje</title>
+    <title>Moje Rezerwacje - System</title>
     <link href="../style.css" rel="stylesheet" />
-    <style>
-        .res-container { width: 95%; max-width: 1200px; margin: 30px auto; }
-        .res-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .res-table th, .res-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        .res-table th { background: #0984e3; color: white; text-transform: uppercase; font-size: 12px; }
-        
-        .status-pill { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .status-waiting { background: #ffeaa7; color: #d35400; }
-        .status-priced { background: #dff9fb; color: #0984e3; }
-        .status-confirmed { background: #d4edda; color: #155724; }
-        
-        .price-tag { font-weight: bold; color: #27ae60; font-size: 16px; }
-        .no-data { padding: 40px; text-align: center; background: white; border-radius: 8px; }
-    </style>
+    <link href="my-reservations.css" rel="stylesheet" />
 </head>
 <body>
 <header>
     <ul class="menu-member">
-        <li>Witaj, <strong><?php echo $_SESSION["username"]; ?></strong></li>
-        <li><a href="enquiry.php">Nowe Zapytanie</a></li>
+        <li><a Witaj, <strong><?php echo $_SESSION["username"]; ?></strong></a></li>
         <li><a href="../index.php">Menu</a></li>
         <li><a href="../includes/logout.inc.php" class="header-login-a">WYLOGUJ</a></li>
     </ul>
 </header>
 
-<section class="res-container">
+<section class="calendar-list">
     <h3>Twoje Zapytania i Rezerwacje</h3>
+    <div class="table-header">
+        <div class="col-date">Termin</div>
+        <div class="col-route">Szczegóły trasy</div>
+        <div class="col-status">Status</div>
+        <div class="col-pricing">Wycena i Akcje</div>
+    </div>
 
     <?php if(!empty($myReservations)): ?>
-        <table class="res-table">
-            <thead>
-                <tr>
-                    <th>Data Przejazdu</th>
-                    <th>Trasa</th>
-                    <th>Osób</th>
-                    <th>Status</th>
-                    <th>Cena</th>
-                    <th>Pojazd</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($myReservations as $res): 
-                    $dt = new DateTime($res['data_przejazdu']);
-                    $statusClass = ($res['status'] == "Oczekuje na wycenę") ? "status-waiting" : "status-priced";
-                ?>
-                <tr>
-                    <td>
-                        <strong><?php echo $dt->format('d.m.Y'); ?></strong><br>
-                        <small><?php echo $dt->format('H:i'); ?></small>
-                    </td>
-                    <td>
-                        <?php echo $res['miasto_z']; ?> <br> 
-                        <span style="color: #636e72;">&rarr; <?php echo $res['miasto_do']; ?></span>
-                    </td>
-                    <td><?php echo $res['liczba_osob']; ?></td>
-                    <td><span class="status-pill <?php echo $statusClass; ?>"><?php echo $res['status']; ?></span></td>
-                    <td>
-                        <span class="price-tag">
-                            <?php echo ($res['cena'] > 0) ? number_format($res['cena'], 2, ',', ' ') . " PLN" : "Wycena w toku"; ?>
-                        </span>
-                    </td>
-                    <td>
-                        <?php echo (!empty($res['model'])) ? $res['model']." (".$res['rejestracja'].")" : "Zostanie przypisany"; ?>
-                    </td>
-                    <th>Akcje</th>
-
-<td>
-    <div class="btn-group">
-        <?php if($res['status'] == "Wyceniono"): ?>
-            <form action="../includes/client/ack-price.inc.php" method="POST" style="display:inline;">
-                <input type="hidden" name="id_rezerwacji" value="<?php echo $res['id_rezerwacji']; ?>">
-                <button type="submit" name="submit" class="btn-ok">Akceptuj</button>
-            </form>
-        <?php endif; ?>
-
-        <form action="../includes/client/cancel.inc.php" method="POST" style="display:inline;">
-            <input type="hidden" name="id_rezerwacji" value="<?php echo $res['id_rezerwacji']; ?>">
-            <button type="submit" name="submit" class="btn-cancel" onclick="return confirm('Czy na pewno chcesz usunąć to zapytanie?')">Usuń</button>
-        </form>
-    </div>
-</td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <div class="no-data">
-            <p>Nie masz jeszcze żadnych zapytań o przejazd.</p>
-            <a href="enquiry.php" style="color: #0984e3;">Kliknij tutaj, aby wysłać pierwsze zapytanie.</a>
+        <?php foreach($myReservations as $res): 
+            $dt = new DateTime($res['data_przejazdu']);
+            $statusClass = "status-waiting"; // Oczekuje na wycenę
+            if($res['status'] == "Wyceniono")
+                 $statusClass = "status-priced";
+            if($res['status'] == "Zatwierdzona")
+                 $statusClass = "status-confirmed";
+        ?>
+    <div class="agenda-row">
+        <div class="col-date">
+            <span class="date-text"><?php echo $dt->format('d.m.Y'); ?></span>
+            <span class="time-text">GODZ. <?php echo $dt->format('H:i'); ?></span>
         </div>
-    <?php endif; ?>
+        <div class="col-route">
+            <div class="route-main"><?php echo $res['miasto_z']; ?> DO <?php echo $res['miasto_do']; ?></div>
+                <div class="route-sub">
+                    Liczba osób: <?php echo $res['liczba_osob']; ?> 
+                    <?php if(!empty($res['godzina_powrotu'])) echo " | Powrót: ".substr($res['godzina_powrotu'], 0, 5); ?>
+                </div>
+                <?php if(!empty($res['rejestracja'])): ?>
+                <div class="bus-info">
+                    Przypisany pojazd: <?php echo $res['model'] . " (" . $res['rejestracja'] . ")"; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="col-status">
+                <span class="status-pill <?php echo $statusClass; ?>">
+                <?php echo $res['status']; ?>
+                </span>
+            </div>
+
+            <div class="col-pricing">
+                <div class="price-display">
+                    <span class="price-label">Koszt przejazdu</span>
+                    <span class="price-val">
+                    <?php echo ($res['cena'] > 0) ? number_format($res['cena'], 2, ',', ' ') . " PLN" : "W trakcie wyceny"; ?>
+                    </span>
+                </div>
+
+                <div class="btn-group">
+                    <?php if($res['status'] == "Wyceniono"): ?>
+                    <form action="../includes/client/ack-price.inc.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="id_rezerwacji" value="<?php echo $res['id_rezerwacji']; ?>">
+                        <button type="submit" name="submit" class="btn-ok">Akceptuj</button>
+                    </form>
+                    <?php endif; ?>
+                    <form action="../includes/client/cancel.inc.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="id_rezerwacji" value="<?php echo $res['id_rezerwacji']; ?>">
+                        <button type="submit" name="submit" class="btn-cancel" onclick="return confirm('Czy na pewno chcesz usunąć to zapytanie?')">Usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+        <?php else: ?>
+        <div style="padding:40px; background:white; text-align:center; border-radius: 0 0 8px 8px; color: #636e72;">
+            Nie masz jeszcze żadnych zapytań. <a href="enquiry.php" style="color: #0984e3; font-weight: bold;">Kliknij tutaj, aby wysłać pierwsze zapytanie.</a>
+        </div>
+        <?php endif; ?>
+    </div>
 </section>
 </body>
 </html>

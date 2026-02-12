@@ -16,8 +16,6 @@ class Model extends Dbh {
         }
 
         $id_konta = $db->lastInsertId();
-
-        // 2. Tabela uzytkownicy
         $stmt = $db->prepare('INSERT INTO uzytkownicy (id_konta, imie, nazwisko, instytucja, telefon, email, adres) VALUES (?, ?, ?, ?, ?, ?, ?);');
         
         if (!$stmt->execute(array($id_konta, $dane['imie'], $dane['nazwisko'], $dane['instytucja'], $dane['telefon'], $email, $dane['adres']))) {
@@ -62,34 +60,34 @@ class Model extends Dbh {
 
 ///////////////// SEKCJA REZERWACJI PRZEJAZDU //////////////////////////////////////////
 protected function checkTravel($data_przejazdu, $liczba_osob) {
-        $db = $this->connect();
+    $db = $this->connect();
 
-        $stmtautobus = $db->prepare('SELECT a.id_autobusu 
-            FROM autobusy a 
-            LEFT JOIN rezerwacje r ON a.id_autobusu = r.id_autobusu AND r.data_przejazdu = ? 
-            WHERE a.liczba_miejsc >= ? AND r.id_rezerwacji IS NULL 
-            ORDER BY a.liczba_miejsc ASC 
-            LIMIT 1');
+    // 1. Wycinamy samą datę (YYYY-MM-DD) z pełnego ciągu datetime-local
+    $pureDate = date('Y-m-d', strtotime($data_przejazdu));
 
-        
+    $stmtautobus = $db->prepare('SELECT a.id_autobusu 
+    FROM autobusy a 
+    WHERE a.liczba_miejsc >= ? 
+    AND a.id_autobusu NOT IN (
+        SELECT r.id_autobusu 
+        FROM rezerwacje r 
+        WHERE DATE(r.data_przejazdu) = ? 
+        AND r.status != "Odrzucono"
+    )
+    ORDER BY a.liczba_miejsc ASC 
+    LIMIT 1');
 
-        $stmtautobus->execute([$data_przejazdu, $liczba_osob]);
-        
+    
+    $stmtautobus->execute([$liczba_osob, $pureDate]);
 
-        $idAutobusu = $stmtautobus->fetchColumn();
-        
+    $idAutobusu = $stmtautobus->fetchColumn();
+    $stmtautobus = null;
 
-        $stmtautobus = null;
-        
-
-        if ($idAutobusu) {
-           
-            return     $idAutobusu;
-                
-        }
-        return false;
+    if ($idAutobusu) {
+        return $idAutobusu;
     }
-
+    return false;
+}
     protected function book($imie_nazwisko, $telefon, $instytucja, $miasto_z, $miasto_do, $data_przejazdu, $godzina_powrotu, $liczba_osob, $id_autobusu, $id_pracownika) {
     $id_uzytkownika = $_SESSION["userid"];
     $data_utworzenia = date("Y-m-d");
@@ -334,8 +332,8 @@ protected function updateStatusClient($id_rezerwacji, $id_konta, $status) {
 }
 
 protected function deleteReservationClient($id_rezerwacji, $id_konta) {
-    $stmt = $this->connect()->prepare('DELETE FROM rezerwacje WHERE id_rezerwacji = ? AND id_konta = ?;');
-    if(!$stmt->execute([$id_rezerwacji, $id_konta])) {
+    $stmt = $this->connect()->prepare('DELETE FROM rezerwacje WHERE id_rezerwacji = ?'); // AND id_konta = ?;');
+    if(!$stmt->execute([$id_rezerwacji])) {
         header("location: ../../client-view/my-reservations.php?error=stmtfailed");
         exit();
     }

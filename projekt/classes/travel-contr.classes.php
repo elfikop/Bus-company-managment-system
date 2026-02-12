@@ -3,29 +3,6 @@ class TravelContr extends Model {
     private $NoR; //liczba wierszy
     public $stmt;
 
-    private $id_rezerwacji;
-    private $id_konta;
-    private $miasto_z;
-    private $miasto_do;
-    private $data_przejazdu;
-    private $liczba_osob;
-   // private $id_rezerwacji;
-    private $status;
-    private $data_utworzenia;
-    private $id_autobusu;
-    private $id_pracownika;
-    private $cena;
-
-    private $nazwisko;
-    private $imie;
-    private $instytucja;
-    private $telefon;
-
-    private $rejestracja;
-    private $model;
-
-    
-
     public function displayEnquries() {
         //session_start();
         if(!isset($_SESSION["userid"])&&($_SESSION["userrole"]=="kierownik")) {

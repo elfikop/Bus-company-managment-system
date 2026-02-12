@@ -20,37 +20,8 @@ $workers = $workerContr->displayWorkers();
 <meta charset="UTF-8">
 <title>Pracownicy</title>
 <link href="../style.css" rel="stylesheet">
+<link href="manage-workers.css" rel="stylesheet">
 
-<style>
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-}
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    font-size: 13px;
-}
-th {
-    background: #dfe6e9;
-    text-transform: uppercase;
-    font-size: 11px;
-}
-input {
-    width: 100%;
-    padding: 6px;
-}
-.btn {
-    padding: 6px 12px;
-    border: none;
-    cursor: pointer;
-    font-size: 11px;
-    text-transform: uppercase;
-}
-.btn-add { background: #27ae60; color: #fff; }
-.btn-del { background: #d63031; color: #fff; }
-</style>
 </head>
 
 <body>

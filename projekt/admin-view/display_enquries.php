@@ -20,81 +20,7 @@ $lol = $enquries->displayEnquries();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Zarządzania - Agenda</title>
     <link href="../style.css" rel="stylesheet" />
-    <style>
-        body { background-color: #f4f7f6; color: #333; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .calendar-list { width: 98%; max-width: 1400px; margin: 30px auto; }
-        
-        .table-header {
-            display: flex;
-            padding: 12px 20px;
-            background: #dfe6e9;
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: bold;
-            color: #636e72;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .agenda-row {
-            display: flex;
-            align-items: center;
-            background: white;
-            margin-bottom: 5px;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            transition: 0.2s;
-        }
-        .agenda-row:hover { background: #f1f2f6; }
-
-        .col-date   { flex: 0 0 110px; }
-        .col-route  { flex: 2; padding-right: 15px; }
-        .col-client { flex: 2; border-left: 1px solid #eee; padding-left: 15px; }
-        .col-status { flex: 1; text-align: center; }
-        .col-pricing { flex: 3; display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
-
-        .date-text { font-weight: bold; font-size: 14px; display: block; }
-        .time-text { color: #0984e3; font-size: 12px; font-weight: 600; }
-
-        .route-main { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-        .route-sub  { font-size: 12px; color: #636e72; }
-       
-        .bus-info { font-size: 11px; color: #27ae60; font-weight: bold; margin-top: 5px; }
-
-        .client-name { font-weight: 600; font-size: 14px; display: block; margin-bottom: 2px; }
-        .client-sub  { font-size: 12px; color: #636e72; display: block; }
-
-        .status-badge {
-            font-size: 10px;
-            padding: 4px 10px;
-            background: #ffeaa7;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .input-inline {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .input-inline label { font-size: 9px; color: #b2bec3; text-transform: uppercase; font-weight: bold; }
-        .input-inline input {
-            padding: 8px;
-            border: 1px solid #dcdde1;
-            border-radius: 4px;
-            width: 100px;
-            font-size: 13px;
-        }
-
-        .btn-group { display: flex; gap: 5px; align-self: flex-end; }
-        .btn-ok { background: #27ae60; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; }
-        .btn-cancel { background: #fab1a0; color: #d63031; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; }
-        
-        .btn-ok:hover { background: #219150; }
-        .btn-cancel:hover { background: #ff7675; color: white; }
-
-        h3 { margin-bottom: 20px; font-weight: 600; }
-    </style>
+    <link href="display_enquries.css" rel="stylesheet"/>
 </head>
 <body>
 <header>
@@ -162,7 +88,7 @@ $lol = $enquries->displayEnquries();
                     
                     <div class="input-inline">
                         <label>Cena (PLN)</label>
-                        <input type="number" name="cena" step="0.01" value="<?php echo $res['cena']; ?>">
+                        <input type="number" name="cena" step="1" required min="1" value="<?php echo $res['cena']; ?>">
                     </div>
 
                     <div class="input-inline">
@@ -173,6 +99,7 @@ $lol = $enquries->displayEnquries();
                     <div class="btn-group">
                         <button type="submit0" name="submit0" value="update" class="btn-ok">Zapisz</button>
                         <button type="submit" name="submit" value="cancel" class="btn-cancel" onclick="return confirm('Czy na pewno chcesz odrzucić to zapytanie?')">Odwołaj</button>
+                        <button type="submit2" name="submit2" value="cancel" class="btn-cancel" onclick="return confirm('Czy na pewno chcesz Usunąć tą rezerwację?')">Usuń</button>
                     </div>
                 </form>
             </div>
